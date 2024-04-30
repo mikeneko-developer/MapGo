@@ -1,0 +1,257 @@
+
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewmodel"
+            type="net.mikemobile.navi.ui.map.MapViewModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/map_default_frame"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="#FFFFFF"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/map_view_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!--ソース上でフラグメントを生成して地図を表示する-->
+            <!--
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />-->
+
+            <net.mikemobile.navi.ui.util.DebugLineView
+                android:id="@+id/debugView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/map"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/map" />
+
+            <net.mikemobile.navi.ui.util.CharacterView
+                android:id="@+id/characterView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/map"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/map"
+                app:layout_constraintVertical_bias="0.0" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/robohon_head" />
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:background="#8A000000"
+                android:gravity="center_vertical"
+                android:text="@{viewmodel.say_text}"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout6"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="#FFFFFF"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/linearLayout5"></LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout5"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="70dp"
+            android:layout_marginEnd="70dp"
+            android:background="#99000000"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@+id/location"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/compass">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewmodel.view_thisGps}"
+                    android:textColor="#FF8E3B"
+                    android:textSize="12sp"
+                    tools:text="GPS" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewmodel.view_etowrk}"
+                    android:textColor="#FA4AE5"
+                    android:textSize="12sp"
+                    tools:text="基地局" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewmodel.view_logGps}"
+                    android:textColor="#FFEB3B"
+                    android:textSize="12sp"
+                    tools:text="Log GPS" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{`拡縮:` + String.valueOf(viewmodel.view_zoom)}"
+                    android:textColor="#FFF"
+                    android:textSize="12sp"
+                    tools:text="拡縮:-" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{`角度:` + String.valueOf(viewmodel.view_angle)}"
+                    android:textColor="#FFF"
+                    android:textSize="12sp"
+                    tools:text="角度:-" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@{`` + viewmodel.view_mapStatus}"
+                    android:textColor="#FFF"
+                    android:textSize="12sp"
+                    tools:text="ステータス" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@{`` + viewmodel.nextPointDistance}"
+                    android:textColor="#FFF"
+                    android:textSize="12sp"
+                    tools:text="次の地点までの距離" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/compass"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:rotation="@{viewmodel.view_angle}"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_direction_nouth"
+            app:layout_constraintBottom_toTopOf="@+id/zoom_up"
+            app:layout_constraintEnd_toEndOf="@+id/zoom_up"
+            app:layout_constraintStart_toStartOf="@+id/zoom_up" />
+
+        <ImageButton
+            android:id="@+id/zoom_up"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:onClick="@{() -> viewmodel.buttonClickZoomIn()}"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_add_xml"
+            android:text="＋"
+            app:layout_constraintBottom_toTopOf="@+id/zoom_down"
+            app:layout_constraintEnd_toEndOf="@+id/zoom_down"
+            app:layout_constraintStart_toStartOf="@+id/zoom_down" />
+
+        <ImageButton
+            android:id="@+id/zoom_down"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:onClick="@{() -> viewmodel.buttonClickZoomOut()}"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_minus_xml"
+            android:text="ー"
+            app:layout_constraintBottom_toTopOf="@+id/location"
+            app:layout_constraintEnd_toEndOf="@+id/location"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/location" />
+
+        <ImageButton
+            android:id="@+id/location"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="80dp"
+            android:onClick="@{() -> viewmodel.buttonClickThisPosi()}"
+            android:scaleType="fitCenter"
+            android:src="@drawable/location"
+            android:text="◯"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,83 @@
+
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewmodel"
+            type="net.mikemobile.navi.ui.navi.MapTopViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="70dp">
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_background"
+            android:onClick="@{() -> viewmodel.buttonClickRouteSearch()}"
+            android:text="徒歩\nルート\n検索"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:visibility="@{viewmodel.listEnable ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/button11"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_background"
+            android:onClick="@{() -> viewmodel.buttonClickCarRouteSearch()}"
+            android:text="車\nルート\n検索"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:visibility="@{viewmodel.listEnable ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toTopOf="@+id/button4"
+            app:layout_constraintEnd_toEndOf="@+id/button4" />
+
+        <Button
+            android:id="@+id/button12"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_background"
+            android:onClick="@{() -> viewmodel.buttonClickRouteClear()}"
+            android:text="ルート\n削除"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:visibility="@{viewmodel.listEnable ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toTopOf="@+id/button11"
+            app:layout_constraintEnd_toEndOf="@+id/button11" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="230dp"
+            android:layout_marginStart="70dp"
+            android:layout_marginEnd="70dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/route_frame"
+            android:orientation="vertical"
+            android:visibility="@{viewmodel.listEnable ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/fragment_map_top_listview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false" />
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,128 @@
+
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewmodel"
+            type="net.mikemobile.navi.ui.dialog.SelectButtonDialogViewModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dialog_frame"
+            android:orientation="vertical"
+            android:padding="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.1"
+                android:text="@{viewmodel.pointData.name}"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="選択位置名" />
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:text="@{viewmodel.pointData.address}"
+                tools:text="住所" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="ルート設定"
+                android:textColor="#4C4C4C" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_background"
+                    android:enabled="@{viewmodel.goalEnabled ? true : false}"
+                    android:onClick="@{() -> viewmodel.buttonClickGoRoute()}"
+                    android:text="目的地に設定"
+                    android:textColor="#FFFFFF" />
+
+                <Button
+                    android:id="@+id/button10"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_background"
+                    android:enabled="@{viewmodel.viaEnabled ? true : false}"
+                    android:onClick="@{() -> viewmodel.buttonClickGoViaRoute()}"
+                    android:text="経由地に設定"
+                    android:textColor="#FFFFFF"
+                    android:visibility="@{viewmodel.haveGoal ? View.VISIBLE : View.GONE}" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/button4"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/button_background"
+                android:onClick="@{() -> viewmodel.buttonClickClearPoint()}"
+                android:text="選択をキャンセル"
+                android:textColor="#FFFFFF"
+                android:visibility="@{viewmodel.pointData.newPosition ? View.GONE : View.VISIBLE}" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="お気に入り"
+                android:textColor="#4C4C4C"
+                android:visibility="@{!viewmodel.pointData.favorite ? View.VISIBLE : View.GONE}" />
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@drawable/button_background"
+                android:onClick="@{() -> viewmodel.buttonClickSavePoint()}"
+                android:text="お気に入りに登録"
+                android:textColor="#FFFFFF"
+                android:visibility="@{!viewmodel.pointData.favorite ? View.VISIBLE : View.GONE}" />
+
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_background"
+                android:onClick="@{() -> viewmodel.buttonClickClose()}"
+                android:text="閉じる"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

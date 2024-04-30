@@ -1,0 +1,80 @@
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewmodel"
+            type="net.mikemobile.navi.ui.menu.RoboMenuFragmentViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#55000000"
+        android:padding="10dp"
+        android:onClick="@{() -> viewmodel.onLayoutClick()}">
+
+        <ImageButton
+            android:id="@+id/btn_menu"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:onClick="@{() -> viewmodel.buttonClickMenu()}"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_menu_xml"
+            android:text="≡"
+            android:tint="#FF5722"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_map"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="10dp"
+            android:onClick="@{() -> viewmodel.buttonClickRobo()}"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_robohon"
+            android:text="地図"
+            android:tint="#FF5722"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_menu"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.499" />
+
+        <ImageButton
+            android:id="@+id/btn_robo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="10dp"
+            android:onClick="@{() -> viewmodel.buttonClickTalk()}"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_talk_xml"
+            android:text="ロボ"
+            android:tint="#FF5722"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_map"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.499" />
+
+        <ImageButton
+            android:id="@+id/btn_pict"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="10dp"
+            android:onClick="@{() -> viewmodel.buttonClickImage()}"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_talk_xml"
+            android:text="ロボ"
+            android:tint="#FF5722"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_robo"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.499" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
+

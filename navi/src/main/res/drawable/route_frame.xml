@@ -1,0 +1,25 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- パディング -->
+    <padding
+            android:top="10dp"
+            android:left="10dp"
+            android:right="10dp"
+            android:bottom="10dp">
+    </padding>
+
+    <!-- 角丸指定 -->
+    <corners
+            android:radius="10dp"
+            android:topLeftRadius="10dp"
+            android:topRightRadius="10dp"
+            android:bottomLeftRadius="10dp"
+            android:bottomRightRadius="10dp"/>
+
+    <!-- 枠線 -->
+    <stroke android:width="3dp"
+            android:color="#FF7B71"/>
+
+    <!-- 背景色 -->
+    <solid android:color="#FFF"/>
+</shape>
