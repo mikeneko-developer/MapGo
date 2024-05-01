@@ -7,7 +7,7 @@
         <import type="android.view.View" />
         <variable
             name="viewmodel"
-            type="com.sp.app.mapgo.ui.viewmodel.MapCtlViewModel" />
+            type="com.sp.app.mapgo.ui.viewmodel.MapViewModel" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_view"

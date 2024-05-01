@@ -17,19 +17,19 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.sp.app.mapgo.R
 import com.sp.app.mapgo.databinding.FragmentMapBinding
+import com.sp.app.mapgo.ui.base.BaseFragment
 import com.sp.app.maplib.Constant
 import com.sp.app.maplib.MapController
 import com.sp.app.maplib.OnMapControllerListener
 import com.sp.app.maplib.data.MapLocation
-import com.sp.app.mapgo.ui.viewmodel.MapCtlViewModel
-import com.sp.app.maplib.ui.base.BaseFragment
+import com.sp.app.mapgo.ui.viewmodel.MapViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MapFragment: BaseFragment(), OnMapReadyCallback {
 
     private lateinit var binding: FragmentMapBinding
-    private val viewModel: MapCtlViewModel by viewModel()
+    private val viewModel: MapViewModel by viewModel()
     companion object {
         const val TAG = "MapFragment"
         fun newInstance() = MapFragment()

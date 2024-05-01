@@ -36,9 +36,7 @@ class MainActivity : BaseActivity() {
 
         setContentView(R.layout.activity_main)
 
-
         addFragment(MapFragment(), R.id.content_background, "MapFragment")
-        addFragment(GameFragment(), R.id.content_main, "GameFragment")
 
         startService()
     }

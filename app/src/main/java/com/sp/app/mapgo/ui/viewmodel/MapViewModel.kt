@@ -19,7 +19,7 @@ import com.sp.app.maplib.util.MagneticSensor
 import com.sp.app.maplib.util.MyDate
 
 
-class MapCtlViewModel(
+class MapViewModel(
     val mapRepository: MapRepository,
 ) : ViewModel() {
 

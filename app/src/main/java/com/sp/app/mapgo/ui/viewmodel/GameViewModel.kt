@@ -12,7 +12,7 @@ class GameViewModel(
 ) : ViewModel() {
 
     companion object {
-        const val TAG = "MainViewModel"
+        const val TAG = "GameViewModel"
     }
     ///////////////////////////////////////////////////
     fun initialize() {}
