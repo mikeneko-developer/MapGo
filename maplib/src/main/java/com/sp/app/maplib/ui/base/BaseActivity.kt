@@ -1,4 +1,4 @@
-package com.sp.app.mapgo.ui.base
+package com.sp.app.maplib.ui.base
 
 import android.content.Intent
 import android.os.Bundle

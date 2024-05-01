@@ -17,12 +17,12 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.sp.app.mapgo.R
 import com.sp.app.mapgo.databinding.FragmentMapBinding
-import com.sp.app.mapgo.ui.base.BaseFragment
 import com.sp.app.maplib.Constant
 import com.sp.app.maplib.MapController
 import com.sp.app.maplib.OnMapControllerListener
 import com.sp.app.maplib.data.MapLocation
-import com.sp.app.mapgo.ui.viewmodel.MapViewModel
+import com.sp.app.maplib.ui.base.BaseFragment
+import com.sp.app.maplib.ui.map.MapViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -88,13 +88,7 @@ class MapFragment: BaseFragment(), OnMapReadyCallback {
         val data = Constant.getDisplaySize(requireActivity())
         binding.mapViewFrame.layoutParams.height = (data.y * 1.4f).toInt()
 
-        val angleMode = viewModel.angleMode.value
-        if (angleMode == null) {
-            viewModel.mapRepository.angleMode.value = 0
-            setAngleToViewSize(0)
-        } else {
-            setAngleToViewSize(angleMode)
-        }
+        setAngleToViewSize(viewModel.angleMode.value!!)
 
         /////////////////////////////////////
         viewModel.initialize()
@@ -145,7 +139,7 @@ class MapFragment: BaseFragment(), OnMapReadyCallback {
 
     override fun onResume() {
         super.onResume()
-        viewModel.resume(requireContext())
+        viewModel.resume()
         setObserve()
     }
 
@@ -172,7 +166,7 @@ class MapFragment: BaseFragment(), OnMapReadyCallback {
         }
 
         viewModel.currentDirection.observe(this) {
-            binding.directionView2.setRotate(it)
+            moveAngle(viewModel.deviceOrientation.value!!, it)
         }
 
         viewModel.angleMode.observe(this) {angleMode ->
@@ -186,6 +180,7 @@ class MapFragment: BaseFragment(), OnMapReadyCallback {
         viewModel.deviceOrientation.removeObservers(this)
         viewModel.angleMode.removeObservers(this)
     }
+
     ////////////////////////////////////////////////////////////////////////
     /**
      * マップの位置調整
@@ -270,31 +265,41 @@ class MapFragment: BaseFragment(), OnMapReadyCallback {
         val angleMode = viewModel.angleMode.value ?: return
 
         // 角度の判定
-        var _angle = deviceOrientation
-
-        // 現在移動と判定されるかどうか
-        var moving = false
-
-        if (direction > 0) {
-            //moving = true
-            _angle = direction
-        }
-
-        _angle = deviceOrientation
+        var _angle = direction
 
         binding.debugText.text = viewModel.getDebugText()
 
+
         if (angleMode == 0) {
-            binding.characterView.setRotate(_angle)
+            binding.directionView1.setRotate(deviceOrientation)
+            binding.directionView1.setTilt(0f)
+
+            binding.characterView.setRotate(direction)
             binding.characterView.setTilt(0f)
+
+            binding.directionView2.setRotate(direction)
+            binding.directionView2.setTilt(0f)
             return
         }
 
+        binding.directionView2.setRotate(0f)
         binding.characterView.setRotate(0f)
+
+        var sabun = if (direction < 0f) {
+            0f - (direction + 360f) + deviceOrientation
+        } else {
+            0f - direction + deviceOrientation
+        }
+
+        binding.directionView1.setRotate(sabun)
         if (angleMode == 2) {
             binding.characterView.setTilt(45f)
+            binding.directionView1.setTilt(45f)
+            binding.directionView2.setTilt(45f)
         } else {
             binding.characterView.setTilt(0f)
+            binding.directionView1.setTilt(0f)
+            binding.directionView2.setTilt(0f)
         }
 
         if (viewModel.view_mapStatus.value == MapController.Companion.MAP_STATUS.TOUCH_MOVE.toString()
@@ -304,6 +309,6 @@ class MapFragment: BaseFragment(), OnMapReadyCallback {
         }
 
         val location = viewModel.getCurrentLocation() ?: return
-        viewModel.mapCtl?.onAngle(location, _angle, moving)
+        viewModel.mapCtl?.onAngle(location, _angle, false)
     }
 }

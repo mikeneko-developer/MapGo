@@ -4,21 +4,14 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.ActivityInfo
-import android.graphics.Bitmap
-import android.graphics.Color
-import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.os.IBinder
-import android.os.Message
-import android.view.SurfaceView
-import com.sp.app.mapgo.ui.base.BaseActivity
-import com.sp.app.mapgo.ui.game.GameFragment
 import com.sp.app.mapgo.ui.map.MapFragment
 import com.sp.app.mapgo.ui.viewmodel.MainViewModel
 import com.sp.app.maplib.service.AppService
 import com.sp.app.maplib.service.OnServiceListener
+import com.sp.app.maplib.ui.base.BaseActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.ref.WeakReference
 

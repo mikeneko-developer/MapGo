@@ -1,4 +1,4 @@
-package com.sp.app.mapgo.ui.viewmodel
+package com.sp.app.maplib.ui.map
 
 import android.content.Context
 import android.graphics.Point
@@ -20,14 +20,13 @@ import com.sp.app.maplib.util.MyDate
 
 
 class MapViewModel(
+    private val context: Context,
     val mapRepository: MapRepository,
 ) : ViewModel() {
 
     companion object {
         const val TAG = "MapViewModel"
     }
-
-    var context: Context? = null
 
     var firstUpdateMap = false
 
@@ -68,8 +67,7 @@ class MapViewModel(
 
     }
 
-    fun resume(context: Context) {
-        this.context = context
+    fun resume() {
         mapRepository.isMapLocationEnable = true
         mapRepository.activityLifecycle.value = "resume"
 
@@ -365,7 +363,11 @@ class MapViewModel(
         }
 
         deviceOrientation.value?.let {
-            text += "\n" + MagneticSensor.toOrientationString(it) + " : 角度: ${it}°"
+            text += "\n" + MagneticSensor.toOrientationString(it) + " : 本体角度: ${it}°"
+        }
+
+        currentDirection.value?.let {
+            text += "\n" + MagneticSensor.toOrientationString(it) + " : 位置角度: ${it}°"
         }
 
         view_mapStatus.value?.let {

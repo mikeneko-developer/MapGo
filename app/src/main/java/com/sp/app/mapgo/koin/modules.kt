@@ -4,7 +4,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import org.koin.android.ext.koin.androidContext
 import com.sp.app.mapgo.ui.viewmodel.MainViewModel
-import com.sp.app.mapgo.ui.viewmodel.MapViewModel
+import com.sp.app.maplib.ui.map.MapViewModel
 import com.sp.app.maplib.repository.MapRepository
 
 
@@ -27,6 +27,6 @@ val repositoryModule = module {
 val viewModelModule = module {
     viewModel {
         MainViewModel(get())
-        MapViewModel(get())
+        MapViewModel(this.androidContext(), get())
     }
 }

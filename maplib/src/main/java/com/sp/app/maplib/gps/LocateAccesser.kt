@@ -394,7 +394,6 @@ class LocateAccesser(var context: Context, var power_type: POWER_TYPE = POWER_TY
      * 取得した位置情報をlistenerで返す
      */
     private var prevLocation: Location? = null
-
     private var waitLocation: Location? = null
     private var prevDirection = -1f
     private val STEEP_ANGLE_THRESHOLD = 45f // 急な角度と判定する境界線
@@ -478,11 +477,12 @@ class LocateAccesser(var context: Context, var power_type: POWER_TYPE = POWER_TY
                     var compulsionUpdate = false
                     if (type == TYPE.GPS) {
                         // GPS情報は無条件で通す
-                    } else if (prevTime + (UPDATE_TIME * 2) > MyDate.getTimeMillis()) {
+                    } else if (prevTime + (UPDATE_TIME * 6) < MyDate.getTimeMillis()) {
                         // 前のデータからUPDATE_TIMEの２倍以上の時間が経過していたら、問答無用で更新対象
+                        Log.i(TAG, "前のデータから"+(UPDATE_TIME * 6)+"以上の時間が経過していたら、問答無用で更新対象" )
                         compulsionUpdate = true
                     } else if (prevTime + UPDATE_TIME > location.time && move < 0.3f) {
-                        // 指定時間を経過していないので更新しない かつ、移動範囲が0.1メートル以内なので更新しない
+                        // 指定時間を経過していないので更新しない かつ、移動範囲が0.3メートル以内なので更新しない
                         Log.e(TAG, "移動範囲が0.3メートル以内なので更新しない" + move)
                         return
                     }
@@ -501,6 +501,7 @@ class LocateAccesser(var context: Context, var power_type: POWER_TYPE = POWER_TY
                         || prevDirection != -1f && (direction - prevDirection) > STEEP_ANGLE_THRESHOLD) {
                         // 急に変な方向を向いたので、一旦保留とする
                         waitLocation = location
+                        Log.e(TAG, "急に変な方向を向いたので、一旦保留とする")
                         return
                     }
 

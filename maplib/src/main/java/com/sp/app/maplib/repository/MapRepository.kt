@@ -164,17 +164,7 @@ class MapRepository(var context: Context): onMyLocationListener {
 
     override fun onCurrentLocation(location: Location, direction: Float) {
         currentLocation.postValue(location)
-
-        var update = false
-        deviceOrientation.value?.let {
-            if ((360f - ORIENTATION_THRESHOLD) >= it && it >= ORIENTATION_THRESHOLD
-                && it + ORIENTATION_THRESHOLD > direction && direction > it - ORIENTATION_THRESHOLD) {
-                update = true
-            }
-        }
-
-
-        if (update)currentDirection.postValue(direction)
+        currentDirection.postValue(direction)
 
         // 現在地をLatLngに変換して渡す
         val current = LatLng(location.latitude, location.longitude)

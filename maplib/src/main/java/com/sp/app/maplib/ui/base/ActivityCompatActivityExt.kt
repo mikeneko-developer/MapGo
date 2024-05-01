@@ -1,4 +1,4 @@
-package com.sp.app.mapgo.ui.base
+package com.sp.app.maplib.ui.base
 
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity

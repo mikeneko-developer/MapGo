@@ -2,7 +2,6 @@ package com.sp.app.mapgo.ui.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.maps.model.LatLng
 import com.sp.app.maplib.repository.MapRepository
 
 
