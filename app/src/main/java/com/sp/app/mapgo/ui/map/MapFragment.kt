@@ -99,8 +99,6 @@ class MapFragment: MapBaseFragment() {
         return R.id.map
     }
 
-
-
     //
     override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?{
 
@@ -119,15 +117,6 @@ class MapFragment: MapBaseFragment() {
     //
     override fun onActivityCreate(savedInstanceState: Bundle?) {
         binding.compassImage.setOnClickListener {
-
-
-//            if (viewModel.angleMode.value == 0) {
-//                if (viewModel.mapRepository.compassAngle != 0f) {
-//                    val location = viewModel.getCurrentLocation() ?: return@setOnClickListener
-//                    viewModel.mapCtl?.onAngle(location, 0f, true)
-//                    return@setOnClickListener
-//                }
-//            }
 
             val angleMode = viewModel.angleMode.value
             if (angleMode == 2) {
