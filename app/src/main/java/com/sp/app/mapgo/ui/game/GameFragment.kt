@@ -15,11 +15,11 @@ import com.sp.app.maplib.ui.base.BaseFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-
-class GameFragment: BaseFragment(), OnMapListener {
+class GameFragment : BaseFragment(), OnMapListener {
 
     private lateinit var binding: FragmentGameBinding
     private val viewModel: GameViewModel by viewModel()
+
     companion object {
         const val TAG = "GameFragment"
         fun newInstance() = GameFragment()
@@ -29,9 +29,13 @@ class GameFragment: BaseFragment(), OnMapListener {
 
 
     //
-    override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?{
+    override fun onCreateViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_game, container,false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_game, container, false)
         val view = binding.root
         binding.viewmodel = viewModel
         binding.lifecycleOwner = this
@@ -49,14 +53,12 @@ class GameFragment: BaseFragment(), OnMapListener {
     override fun onResume() {
         super.onResume()
         viewModel.resume()
-        viewModel.mapRepository.setOnMapListener(this)
         setObserve()
     }
 
     override fun onPause() {
         super.onPause()
         viewModel.pause()
-        viewModel.mapRepository.setOnMapListener(null, this.javaClass.simpleName)
         removeObserve()
     }
 
@@ -66,7 +68,7 @@ class GameFragment: BaseFragment(), OnMapListener {
     }
 
     //
-    override fun onBack() { }
+    override fun onBack() {}
 
     ////////////////////////////////////////////////////////////////////////
     private fun setObserve() {

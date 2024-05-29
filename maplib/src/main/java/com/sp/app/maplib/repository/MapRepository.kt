@@ -18,7 +18,10 @@ import com.sp.app.maplib.listener.MapRepositoryCallback
 import com.sp.app.maplib.listener.OnMapListener
 import com.sp.app.maplib.util.getLocateFloat
 
-class MapRepository(var context: Context): onMyLocationListener {
+class MapRepository(
+    var context: Context,
+    var firstAngleMode: Int = 0,
+): onMyLocationListener {
     var activityLifecycle = MutableLiveData<String>().apply{value = "NONE"}
 
     var windowWidth: Int = 0
@@ -81,12 +84,14 @@ class MapRepository(var context: Context): onMyLocationListener {
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+
     var deviceOrientation = MutableLiveData<Float>().apply{value = 0f}
     var magneticDirection = MutableLiveData<Float>().apply{value = 0f}
 
     ///////////////////////////////////////////////////////////////////////////
 
-    var angleMode = MutableLiveData<Int>(0)
+    var angleMode = MutableLiveData<Int>(firstAngleMode)
 
     val mapStatusString = MutableLiveData<String>().apply{
         value = "MAP_LOAD"

@@ -7,20 +7,20 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.maps.model.*
-import com.sp.app.maplib.data.MapLocation
-import com.sp.app.maplib.debug.view.DebugLineView
+import com.google.android.gms.maps.model.LatLng
 import com.sp.app.maplib.Constant
 import com.sp.app.maplib.MapController
 import com.sp.app.maplib.MapInterface
 import com.sp.app.maplib.R
+import com.sp.app.maplib.data.MapLocation
+import com.sp.app.maplib.debug.view.DebugLineView
 import com.sp.app.maplib.repository.MapRepository
 import com.sp.app.maplib.util.MagneticSensor
 import com.sp.app.maplib.util.MyDate
 
 
 class MapViewModel(
-    private val context: Context,
+    val context: Context,
     val mapRepository: MapRepository,
 ) : ViewModel() {
 
@@ -31,6 +31,8 @@ class MapViewModel(
     var firstUpdateMap = false
 
     ///////////////////////////////////////////////////
+    val debug_log: MutableLiveData<String> = MutableLiveData<String>("")
+
 
     ///////////////////////////////////////////////////
     var view_zoom: LiveData<Float> = mapRepository.mapZoom
@@ -77,106 +79,14 @@ class MapViewModel(
             if (location != null) {
                 val latLng = LatLng(location.latitude, location.longitude)
                 setCurrentLocation(latLng)
+
+                debug_log.postValue(getDebugText())
             }
         }
-
-//        guideRepository.guideMode.observe(fragment, object : Observer<String?> {
-//            override fun onChanged(guideMode: String?) {
-//                if (guideMode != null) {
-//                    mapCtl?.onStartGuide()
-//                } else {
-//                    mapCtl?.onStopGuide()
-//                }
-//            }
-//        })
-
-//        mapRepository.twoPointLiveData.observe(fragment, object : Observer<TwoPoint?> {
-//            override fun onChanged(twoPoint: TwoPoint?) {
-//                twoPoint?.let {
-//                    mapCtl?.onFocusCenter(twoPoint.neLatLng, twoPoint.wsLatLng)
-//                }
-//            }
-//        })
-//        //////////////////////////////////////////////////////////////////////////////
-        // GPSのログ情報が更新されたらマーカーを描画
-//        mapRepository.gpsLogLocation.observe(fragment, object : Observer<Location?> {
-//            override fun onChanged(location: Location?) {
-//                if (location != null) {
-//                    //Log.v("!!!!!!!!!!","GPSログが更新されました")
-//                    val latLng = LatLng(location.latitude, location.longitude)
-//                    val markerOptions = getMarkerOptions(latLng, null, com.sp.app.maplib.R.drawable.marker_log)
-//                    markerOptions.anchor(0.5f,0.5f)
-//                    mapCtl?.onAddMarker(markerOptions)
-//                    mapCtl?.onFocus(latLng)
-//                }
-//            }
-//        })
-
-        // GPSのログ情報が更新されたらマーカーを描画
-//        mapRepository.networkLogLocation.observe(fragment, object : Observer<Location?> {
-//            override fun onChanged(location: Location?) {
-//                if (location != null) {
-//                    //Log.v("!!!!!!!!!!","GPSログが更新されました")
-//                    val latLng = LatLng(location.latitude, location.longitude)
-//                    val markerOptions = getMarkerOptions(latLng, null, com.sp.app.maplib.R.drawable.marker_log2)
-//                    markerOptions.anchor(0.5f,0.5f)
-//                    mapCtl?.onAddMarker(markerOptions)
-//                    mapCtl?.onFocus(latLng)
-//                }
-//            }
-//        })
-
-        // 指定ポイントへのフォーカス
-//        mapRepository.selectPoints.observe(fragment, object : Observer<MapLocation?> {
-//            override fun onChanged(pointData: MapLocation?) {
-//                pointData?.let {
-//                    mapCtl?.onFocusSelect(it.point)
-//                }
-//            }
-//        })
-//
-//        // お気に入りリスト情報の更新検知用
-//        dataRepository.favoriteList.observe(fragment, object : Observer<MutableList<FavoriteData>> {
-//            override fun onChanged(list: MutableList<FavoriteData>) {
-//                mapRepository.setFavoriteData(list)
-//
-//            }
-//        })
-//
-//        // フォーカスを更新する
-//        routeRepository.focusLocation.observe(fragment, object : Observer<LatLng?> {
-//            override fun onChanged(location: LatLng?) {
-//                if (location != null) {
-//                    mapCtl?.onFocusSelect(location)
-//                }
-//            }
-//        })
-//
-//        routeRepository.nextPointLatLng.observe(fragment, object : Observer<LatLng?> {
-//            override fun onChanged(location: LatLng?) {
-//                setNextLocateMaker(location)
-//            }
-//        })
-//
-//        // ルート線を更新する
-//        routeRepository.routesData.observe(fragment, object : Observer<MapRoute?> {
-//            override fun onChanged(routeData: MapRoute?) {
-//                if (routeData != null) {
-//                    // ルート線の表示
-//                    setPolyLine(routeData.polylineOptions)
-//
-//                    // スタート・ゴール・経由地をマーク
-//
-//                } else {
-//                    setPolyLine(null)
-//                }
-//            }
-//        })
     }
 
     fun pause() {
         mapRepository.isMapLocationEnable = false
-
         mapRepository.activityLifecycle.value = "pause"
         mapRepository.currentLocation.removeObserver {}
     }
@@ -189,20 +99,9 @@ class MapViewModel(
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    private var debugLineView: DebugLineView? = null
-    fun setDebugView(debugView: DebugLineView) {
-        this.debugLineView = debugView
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
     // マップ制御系
     ////////////////////////////////////////////////////////////////////////////////////////////////
     var mapCtl: MapInterface? = null
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -212,7 +111,8 @@ class MapViewModel(
      * 地図の長押しで呼ばれる
      */
     fun setSelectLocation(pointData: MapLocation) {
-        val address = Constant.getAddress(context!!, pointData.point.latitude, pointData.point.longitude)
+        val address =
+            Constant.getAddress(context, pointData.point.latitude, pointData.point.longitude)
         pointData.address = address
 
         Log.i(TAG, "setSelectLocation()")
@@ -232,12 +132,12 @@ class MapViewModel(
 
             // 足跡
             val markerOptions = Constant.getMarkerOptions(
-                context!!,
+                context,
                 latLng,
                 null,
                 R.drawable.marker_log
             )
-            markerOptions.anchor(0.5f,0.5f)
+            markerOptions.anchor(0.5f, 0.5f)
             it.onCurrentLog(markerOptions)
         }
 
@@ -246,20 +146,23 @@ class MapViewModel(
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    fun buttonClickZoomIn(){
+    fun buttonClickZoomIn() {
 
 
     }
-    fun buttonClickZoomOut(){
+
+    fun buttonClickZoomOut() {
 
 
     }
-    fun buttonClickThisPosi(){
-        if (mapRepository.getLocationCurrent() == null)return
+
+    fun buttonClickThisPosi() {
+        if (mapRepository.getLocationCurrent() == null) return
         mapCtl?.onFocusCurrent(mapRepository.getLocationCurrent()!!)
     }
+
     fun buttonClickCompass() {
-        if (mapRepository.getLocationCurrent() == null)return
+        if (mapRepository.getLocationCurrent() == null) return
         mapCtl?.onAngle(mapRepository.getLocationCurrent()!!, 0f)
 
         //zoom = 17.5f
@@ -275,7 +178,8 @@ class MapViewModel(
     // --------------------------------------------------------
 
     fun onLongClickMap(pointData: MapLocation) {
-        val address = Constant.getAddress(context!!, pointData.point.latitude, pointData.point.longitude)
+        val address =
+            Constant.getAddress(context, pointData.point.latitude, pointData.point.longitude)
         pointData.address = address
 
         Log.i(TAG, "setSelectLocation()")
@@ -304,6 +208,7 @@ class MapViewModel(
         mapRepository.angle.postValue(-(angle))
     }
 
+
     fun onChangeZoom(zoom: Float) {
         mapRepository.mapZoom.postValue(zoom)
     }
@@ -311,24 +216,33 @@ class MapViewModel(
     fun changeCompassMode() {
         val angleMode = angleMode.value ?: return
 
-        if (angleMode == 0) {
-            mapRepository.angleMode.value = 1
-            mapCtl?.onTilt(0f)
+        val newAngleMode = if (angleMode == 0) {
+            1
         } else if (angleMode == 1) {
-            mapRepository.angleMode.value = 2
-            mapCtl?.onTilt(90f)
+            2
         } else {
-            mapRepository.angleMode.value = 0
-
-            val location = getCurrentLocation() ?: return
-            mapCtl?.onAngle(location, 0f, false)
-            mapCtl?.onTilt(0f)
+            0
         }
+
+        setCompassMode(newAngleMode)
 
         //zoom = 17.5f
         //angle = 0f
     }
 
+    fun setCompassMode(angleMode: Int) {
+        mapRepository.angleMode.value = angleMode
+
+        if (angleMode == 1) {
+            mapCtl?.onTilt(0f)
+        } else if (angleMode == 2) {
+            mapCtl?.onTilt(90f)
+        } else {
+            val location = getCurrentLocation() ?: return
+            mapCtl?.onAngle(location, 0f, false)
+            mapCtl?.onTilt(0f)
+        }
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -349,7 +263,6 @@ class MapViewModel(
     fun getCurrentLocation(): LatLng? {
         return mapRepository.getLocationCurrent()
     }
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //

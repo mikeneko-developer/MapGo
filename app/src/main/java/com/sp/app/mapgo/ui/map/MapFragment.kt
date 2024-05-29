@@ -4,74 +4,102 @@ import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import androidx.databinding.DataBindingUtil
 
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.sp.app.mapgo.R
 import com.sp.app.mapgo.databinding.FragmentMapBinding
-import com.sp.app.maplib.Constant
-import com.sp.app.maplib.MapController
-import com.sp.app.maplib.OnMapControllerListener
-import com.sp.app.maplib.data.MapLocation
-import com.sp.app.maplib.ui.base.BaseFragment
-import com.sp.app.maplib.ui.map.MapViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.sp.app.maplib.ui.map.MapBaseFragment
 
 
-class MapFragment: BaseFragment(), OnMapReadyCallback {
+class MapFragment: MapBaseFragment() {
 
     private lateinit var binding: FragmentMapBinding
-    private val viewModel: MapViewModel by viewModel()
     companion object {
         const val TAG = "MapFragment"
         fun newInstance() = MapFragment()
     }
 
     // ---------------------------------------------------------------------------------------------
-
-    private val mapControllerListener = object: OnMapControllerListener {
-        override fun onStatus(status: MapController.Companion.MAP_STATUS) {
-            viewModel.mapRepository.mapStatusString.postValue("" + status)
-        }
-        override fun onRequestCurrent() {
-            val location = viewModel.getCurrentLocation() ?: return
-            viewModel.mapCtl?.onCurrent(location)
-        }
-
-        override fun onChangeAngle(angle: Float) {
-            viewModel.onChangeAngle(angle)
-        }
-
-        override fun onChangeZoom(zoom: Float) {
-            viewModel.onChangeZoom(zoom)
-        }
-        override fun onLastCurrent(latLng: LatLng, point: Point) {
-            binding.debugView.setPoint(point)
-            binding.characterView.setPoint(point)
-            binding.directionView1.setPoint(point)
-            binding.directionView2.setPoint(point)
-        }
-
-        override fun onLongClickMap(point: MapLocation) {
-            viewModel.onLongClickMap(point)
-        }
-        override fun onPoiClickMap(point: MapLocation) {}
-        override fun onMoveStartMap(isTouch: Boolean) {}
-        override fun onMoveMap() {}
-        override fun onMoveEndMap(isTouch: Boolean) {}
-        override fun onMarkerClickMap(
-            marker_type: MapController.Companion.MARKER_TYPE,
-            marker_id: String
-        ) {}
+    // マップから取得した現在位置
+    override fun onMapToCurrentPosition(latLng: LatLng, point: Point) {
+        binding.debugView.setPoint(point)
+        binding.characterView.setPoint(point)
+        binding.directionView1.setPoint(point)
     }
+
+    // デバイスの方向が更新された時呼び出される
+    override fun onChangeDeviceOrientation(orientation: Float) {
+        if (viewModel.angleMode.value == 0) {
+            binding.directionView1.setRotate(orientation)
+        } else {
+            binding.directionView1.setRotate(0f)
+        }
+    }
+
+    //
+    override fun onChangeAngleMode(angleMode: Int) {
+        if (angleMode == 0) {
+            binding.compassImage.setImageResource(com.sp.app.maplib.R.drawable.icon_direction_nouth)
+            binding.compassImage.rotationX = 0f
+        } else if (angleMode == 1) {
+            binding.compassImage.setImageResource(com.sp.app.maplib.R.drawable.icon_direction)
+            binding.compassImage.rotationX = 0f
+        } else {
+            binding.compassImage.setImageResource(com.sp.app.maplib.R.drawable.icon_direction)
+            binding.compassImage.rotationX = 45f
+        }
+    }
+
+    // マップのViewのサイズ
+    override fun onMapArea(startPoint: Point, endPoint: Point) {
+        binding.debugView.setMapEnableArea(startPoint, endPoint)
+        binding.characterView.setMapEnableArea(startPoint, endPoint)
+        binding.directionView1.setMapEnableArea(startPoint, endPoint)
+    }
+
+    override fun onChangeAngle(
+        angleMode: Int,
+        deviceOrientation: Float,
+        tilt: Float
+    ) {
+        if (angleMode == 0) {
+            binding.directionView1.setRotate(deviceOrientation)
+            binding.directionView1.setTilt(tilt)
+
+            binding.characterView.setRotate(deviceOrientation)
+            binding.characterView.setTilt(tilt)
+            return
+        }
+
+        binding.characterView.setRotate(0f)
+        binding.directionView1.setRotate(deviceOrientation)
+
+        if (angleMode == 2) {
+            binding.characterView.setTilt(tilt)
+            binding.directionView1.setTilt(tilt)
+        } else {
+            binding.characterView.setTilt(tilt)
+            binding.directionView1.setTilt(tilt)
+        }
+    }
+
+    override fun getMainFrame(): View? {
+        return binding.topView
+    }
+
+    override fun getMapFrame(): View? {
+        return binding.mapViewFrame
+    }
+
+    override fun getMapResourceId(): Int {
+        return R.id.map
+    }
+
+
 
     //
     override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?{
@@ -79,30 +107,11 @@ class MapFragment: BaseFragment(), OnMapReadyCallback {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_map, container,false)
         val view = binding.root
         binding.viewmodel = viewModel
-
         binding.lifecycleOwner = this
 
-        // マップのサイズをViewのサイズに調整する処理
-        viewSizeSetup(binding.topView)
+        viewModel.mapRepository.angleMode.value = 1
 
-        val data = Constant.getDisplaySize(requireActivity())
-        binding.mapViewFrame.layoutParams.height = (data.y * 1.4f).toInt()
-
-        setAngleToViewSize(viewModel.angleMode.value!!)
-
-        /////////////////////////////////////
-        viewModel.initialize()
-
-        /////////////////////////////////////
-
-
-        // MapFragmentの生成と設定
-        var map : SupportMapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        if (map == null) {
-            map = SupportMapFragment.newInstance()
-            childFragmentManager.beginTransaction().replace(R.id.map, map).commit()
-        }
-        map.getMapAsync(this)
+        super.onCreateViewBindingSetup(inflater, container, savedInstanceState)
 
         return view
     }
@@ -110,7 +119,22 @@ class MapFragment: BaseFragment(), OnMapReadyCallback {
     //
     override fun onActivityCreate(savedInstanceState: Bundle?) {
         binding.compassImage.setOnClickListener {
-            viewModel.changeCompassMode()
+
+
+//            if (viewModel.angleMode.value == 0) {
+//                if (viewModel.mapRepository.compassAngle != 0f) {
+//                    val location = viewModel.getCurrentLocation() ?: return@setOnClickListener
+//                    viewModel.mapCtl?.onAngle(location, 0f, true)
+//                    return@setOnClickListener
+//                }
+//            }
+
+            val angleMode = viewModel.angleMode.value
+            if (angleMode == 2) {
+                viewModel.setCompassMode(1)
+            } else {
+                viewModel.setCompassMode(2)
+            }
         }
         binding.zoomUp.setOnClickListener {
             viewModel.mapCtl?.onZoomIn()
@@ -130,28 +154,20 @@ class MapFragment: BaseFragment(), OnMapReadyCallback {
         BitmapFactory.decodeResource(r, R.drawable.arrow_orientation)?.let {
             binding.directionView1.setImageBitmap(it)
         }
-        BitmapFactory.decodeResource(r, R.drawable.arrow_direction)?.let {
-            binding.directionView2.setImageBitmap(it)
-        }
-
-        viewModel.create()
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.resume()
         setObserve()
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel.pause()
         removeObserve()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.destroy()
     }
 
     //
@@ -160,155 +176,15 @@ class MapFragment: BaseFragment(), OnMapReadyCallback {
     ////////////////////////////////////////////////////////////////////////
     private fun setObserve() {
 
-        viewModel.deviceOrientation.observe(this) {
-            binding.directionView1.setRotate(it)
-            moveAngle(it, viewModel.currentDirection.value!!)
-        }
-
-        viewModel.currentDirection.observe(this) {
-            moveAngle(viewModel.deviceOrientation.value!!, it)
-        }
-
-        viewModel.angleMode.observe(this) {angleMode ->
-            setAngleToViewSize(angleMode)
-        }
 
     }
 
     private fun removeObserve() {
-        viewModel.currentLocation.removeObservers(this)
-        viewModel.deviceOrientation.removeObservers(this)
-        viewModel.angleMode.removeObservers(this)
+
     }
 
     ////////////////////////////////////////////////////////////////////////
-    /**
-     * マップの位置調整
-     */
-    private fun setAngleToViewSize(angleMode: Int) {
-
-        val data = Constant.getDisplaySize(requireActivity())
-        val y = if (angleMode != 0) {
-            0f
-        } else {
-            -((data.y * 0.4f) / 2)
-        }
-
-        binding.mapViewFrame.y = y
-
-        if (angleMode == 0) {
-            binding.compassImage.setImageResource(com.sp.app.maplib.R.drawable.icon_direction_nouth)
-            binding.compassImage.rotationX = 0f
-        } else if (angleMode == 1) {
-            binding.compassImage.setImageResource(com.sp.app.maplib.R.drawable.icon_direction)
-            binding.compassImage.rotationX = 0f
-        } else {
-            binding.compassImage.setImageResource(com.sp.app.maplib.R.drawable.icon_direction)
-            binding.compassImage.rotationX = 45f
-        }
-    }
-
-    private fun viewSizeSetup(mainView: View) {
-        mainView.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                mainView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                Log.i(TAG, "addOnGlobalLayoutListener")
-                // 地図を表示するViewのサイズを一回だけ取得
-                val width = mainView.width
-                val height = mainView.height
-
-                viewModel.setViewSize(width, height)
-            }
-        })
-    }
-
-    // MapFragmentの初期化関連
-    var centerMoveX = 0.0
-    var centerMoveY = 0.0
-    private fun setMapViewSize(width: Int, height: Int) {
-
-        val startPoint = Point(0,height/10)
-        val endPoint = Point(width,height - (height/ 5 * 2))
-        binding.debugView.setMapEnableArea(startPoint, endPoint)
-        binding.characterView.setMapEnableArea(startPoint, endPoint)
-        binding.directionView1.setMapEnableArea(startPoint, endPoint)
-        binding.directionView2.setMapEnableArea(startPoint, endPoint)
-
-        val areaWidth = endPoint.x - startPoint.x
-        val areaHeight = endPoint.y - startPoint.y
-
-        viewModel.mapCtl?.onDisplayArea(areaWidth, areaHeight / 3 * 2)
-
-        centerMoveX = 0.0
-        centerMoveY = (areaHeight/2 + startPoint.y/2).toDouble()
-
-        //centerMoveY = 700.0
-
-        viewModel.mapCtl?.setMoveCenter(centerMoveX, centerMoveY)
-    }
-
-    override fun onMapReady(googleMap: GoogleMap) {
-        context?.let {
-            viewModel.mapCtl = MapController(it, googleMap, mapControllerListener)
-
-            val width = viewModel.getMapWidth()
-            val height = viewModel.getMapHeight()
-
-            setMapViewSize(width, height)
-        }
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    private fun moveAngle(deviceOrientation: Float, direction: Float) {
-        val angleMode = viewModel.angleMode.value ?: return
-
-        // 角度の判定
-        var _angle = direction
-
-        binding.debugText.text = viewModel.getDebugText()
 
 
-        if (angleMode == 0) {
-            binding.directionView1.setRotate(deviceOrientation)
-            binding.directionView1.setTilt(0f)
 
-            binding.characterView.setRotate(direction)
-            binding.characterView.setTilt(0f)
-
-            binding.directionView2.setRotate(direction)
-            binding.directionView2.setTilt(0f)
-            return
-        }
-
-        binding.directionView2.setRotate(0f)
-        binding.characterView.setRotate(0f)
-
-        var sabun = if (direction < 0f) {
-            0f - (direction + 360f) + deviceOrientation
-        } else {
-            0f - direction + deviceOrientation
-        }
-
-        binding.directionView1.setRotate(sabun)
-        if (angleMode == 2) {
-            binding.characterView.setTilt(45f)
-            binding.directionView1.setTilt(45f)
-            binding.directionView2.setTilt(45f)
-        } else {
-            binding.characterView.setTilt(0f)
-            binding.directionView1.setTilt(0f)
-            binding.directionView2.setTilt(0f)
-        }
-
-        if (viewModel.view_mapStatus.value == MapController.Companion.MAP_STATUS.TOUCH_MOVE.toString()
-            || viewModel.view_mapStatus.value == MapController.Companion.MAP_STATUS.MAP_DIRECT_MOVE.toString()) {
-            viewModel.mapCtl?.onAngle(_angle)
-            return
-        }
-
-        val location = viewModel.getCurrentLocation() ?: return
-        viewModel.mapCtl?.onAngle(location, _angle, false)
-    }
 }

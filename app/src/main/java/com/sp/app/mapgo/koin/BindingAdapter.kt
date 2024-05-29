@@ -8,13 +8,13 @@ object BindingAdapters {
     @JvmStatic
     @BindingAdapter("bindSrcCompat")
     fun bindSrcCompat(imageView: ImageView?, drawable: Drawable?) {
-        imageView?.setImageDrawable(drawable)
+    imageView?.setImageDrawable(drawable)
     }
-    */
+     */
 
     @JvmStatic
     @BindingAdapter("bindingAngleSize")
     fun bindingAngleSize(textView: TextView?, angle: Float?) {
-        textView?.setText("" + angle + "m")
+        textView?.text = "" + angle + "m"
     }
 }

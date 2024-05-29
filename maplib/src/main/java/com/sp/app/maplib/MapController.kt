@@ -9,7 +9,6 @@ import android.util.Log
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
-import com.sp.app.maplib.R
 import com.sp.app.maplib.data.MapLocation
 import com.sp.app.maplib.util.distanceCalc
 
@@ -51,7 +50,8 @@ interface MapInterface {
     fun onAngle(angle: Float)
 
     fun onFocus(latLng: LatLng)         // その他基本フォーカス
-    fun onFocusCurrent(latLng: LatLng)  // 現在地ボタンを押した時用
+    fun onFocusCompass(latLng: LatLng, isAnimation: Boolean): Boolean
+    fun onFocusCurrent(latLng: LatLng) // 現在地ボタンを押した時用
     fun onFocusSelect(latLng: LatLng)   // 建物、特定位置から固定する用
 
     fun onFocusCenter(south: LatLng, north: LatLng)         // 2点間の中心に移動
@@ -637,7 +637,7 @@ class MapController(val context: Context, val mMap: GoogleMap, val listener: OnM
         }
         currentLog.add(marker)
 
-        if(currentLog.size > 1000){
+        if(currentLog.size > 100000){
             val lastMarker = currentLog[0]
             currentLog.removeAt(0)
 
@@ -785,6 +785,15 @@ class MapController(val context: Context, val mMap: GoogleMap, val listener: OnM
 
     override fun onZoom(latLng: LatLng, zoom: Float) {
         setZoomAndAngle(latLng, zoom, angle, true)
+    }
+
+    override fun onFocusCompass(latLng: LatLng, isAnimation: Boolean): Boolean {
+        if(STEP != MAPLOAD_AND_ZOOM_STEP.START_MAP)return true
+        Log.v(TAG,"STATUS:" + STATUS + " onFocusCompass")
+
+        setFocus(latLng, false)
+
+        return (mMap.cameraPosition.bearing != angle)
     }
 
     /**

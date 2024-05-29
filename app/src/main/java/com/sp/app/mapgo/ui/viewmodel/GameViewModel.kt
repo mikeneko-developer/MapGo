@@ -2,12 +2,10 @@ package com.sp.app.mapgo.ui.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.sp.app.maplib.repository.MapRepository
 
 
 class GameViewModel(
     private val context: Context,
-    val mapRepository: MapRepository,
 ) : ViewModel() {
 
     companion object {

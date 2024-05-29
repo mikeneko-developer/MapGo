@@ -51,6 +51,19 @@ class LocateAccesser(var context: Context, var power_type: POWER_TYPE = POWER_TY
         const val METRE_2 = 2f
 
         const val UPDATE_TIME = WAIT_500
+
+        /**
+         * デバイスの方向から、地図の位置情報から計算した角度を総合して計算し、地図で表示する角度を取得する
+         */
+        fun calcDirectionToRotation(direction: Float, deviceOrientation: Float): Float {
+            var sabun = if (direction < 0f) {
+                0f - (direction + 360f) + deviceOrientation
+            } else {
+                0f - direction + deviceOrientation
+            }
+
+            return sabun
+        }
     }
     init{
         setUp()
@@ -398,6 +411,7 @@ class LocateAccesser(var context: Context, var power_type: POWER_TYPE = POWER_TY
     private var prevDirection = -1f
     private val STEEP_ANGLE_THRESHOLD = 45f // 急な角度と判定する境界線
     private val STEEP_ANGLE_THRESHOLD2 = 60f // 急な角度と判定する境界線
+    private val THRESHOLD_MOVE = 0.6f
 
     private fun throwLocation(type: TYPE, location: Location) {
 
@@ -462,8 +476,6 @@ class LocateAccesser(var context: Context, var power_type: POWER_TYPE = POWER_TY
                         }
                     }
 
-
-
                     val prevTime = prevLocation!!.time
 
                     val move = distanceCalc(
@@ -477,13 +489,17 @@ class LocateAccesser(var context: Context, var power_type: POWER_TYPE = POWER_TY
                     var compulsionUpdate = false
                     if (type == TYPE.GPS) {
                         // GPS情報は無条件で通す
+                    } else if (move < THRESHOLD_MOVE) {
+                        // 移動範囲が THRESHOLD_MOVE メートル以内なので更新しない
+                        Log.e(TAG, "移動範囲が"+THRESHOLD_MOVE+"メートル以内なので更新しない" + move)
+                        return
                     } else if (prevTime + (UPDATE_TIME * 6) < MyDate.getTimeMillis()) {
                         // 前のデータからUPDATE_TIMEの２倍以上の時間が経過していたら、問答無用で更新対象
                         Log.i(TAG, "前のデータから"+(UPDATE_TIME * 6)+"以上の時間が経過していたら、問答無用で更新対象" )
                         compulsionUpdate = true
-                    } else if (prevTime + UPDATE_TIME > location.time && move < 0.3f) {
+                    } else if (prevTime + UPDATE_TIME > location.time) {
                         // 指定時間を経過していないので更新しない かつ、移動範囲が0.3メートル以内なので更新しない
-                        Log.e(TAG, "移動範囲が0.3メートル以内なので更新しない" + move)
+                        Log.e(TAG, "指定時間を経過していないので更新しない")
                         return
                     }
 
@@ -504,7 +520,6 @@ class LocateAccesser(var context: Context, var power_type: POWER_TYPE = POWER_TY
                         Log.e(TAG, "急に変な方向を向いたので、一旦保留とする")
                         return
                     }
-
 
                     prevLocation = location
 

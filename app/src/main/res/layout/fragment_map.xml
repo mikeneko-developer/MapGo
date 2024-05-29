@@ -1,14 +1,16 @@
-
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="viewmodel"
             type="com.sp.app.maplib.ui.map.MapViewModel" />
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_view"
         android:layout_width="match_parent"
@@ -66,17 +68,6 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <com.sp.app.maplib.ui.map.CharacterView
-                android:id="@+id/directionView2"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="@+id/map"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/map"
-                app:layout_constraintVertical_bias="0.0" />
-
-            <com.sp.app.maplib.ui.map.CharacterView
                 android:id="@+id/characterView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -97,7 +88,7 @@
             android:layout_marginTop="5dp"
             android:background="#BEFFFFFF"
             android:padding="5dp"
-            android:text=""
+            android:text="@{viewmodel.debug_log}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -121,19 +112,19 @@
             android:id="@+id/compassImage"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/icon_direction_nouth"
-            app:srcCompat="@drawable/icon_direction_nouth"
             android:rotation="@{viewmodel.view_angle}"
+            android:src="@drawable/icon_direction_nouth"
             app:layout_constraintBottom_toTopOf="@+id/zoom_up"
             app:layout_constraintEnd_toEndOf="@+id/zoom_up"
-            app:layout_constraintStart_toStartOf="@+id/zoom_up" />
+            app:layout_constraintStart_toStartOf="@+id/zoom_up"
+            app:srcCompat="@drawable/icon_direction_nouth" />
 
         <ImageButton
             android:id="@+id/zoom_up"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/icon_add_xml"
             android:scaleType="fitCenter"
+            android:src="@drawable/icon_add_xml"
             android:text="＋"
             app:layout_constraintBottom_toTopOf="@+id/zoom_down"
             app:layout_constraintEnd_toEndOf="@+id/zoom_down"
@@ -143,8 +134,8 @@
             android:id="@+id/zoom_down"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/icon_minus_xml"
             android:scaleType="fitCenter"
+            android:src="@drawable/icon_minus_xml"
             android:text="ー"
             app:layout_constraintBottom_toTopOf="@+id/location"
             app:layout_constraintEnd_toEndOf="@+id/location"

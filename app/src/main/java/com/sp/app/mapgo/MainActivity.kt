@@ -7,13 +7,13 @@ import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import com.sp.app.mapgo.ui.game.GameFragment
 import com.sp.app.mapgo.ui.map.MapFragment
 import com.sp.app.mapgo.ui.viewmodel.MainViewModel
 import com.sp.app.maplib.service.AppService
 import com.sp.app.maplib.service.OnServiceListener
 import com.sp.app.maplib.ui.base.BaseActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.lang.ref.WeakReference
 
 
 class MainActivity : BaseActivity() {
@@ -25,26 +25,18 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         //画面の向きを縦に固定
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         setContentView(R.layout.activity_main)
 
         addFragment(MapFragment(), R.id.content_background, "MapFragment")
+        addFragment(GameFragment(), R.id.content_main, "GameFragment")
 
         startService()
     }
 
-    override fun onResume(){
-        super.onResume()
-    }
 
-    override fun onPause(){
-        super.onPause()
-    }
-
-
-
-    override fun onDestroy(){
+    override fun onDestroy() {
         super.onDestroy()
 
         stopService()
@@ -53,7 +45,7 @@ class MainActivity : BaseActivity() {
     /** ================================================================================= */
     // Service関連
     private var serviceBinder: AppService.LocalBinder? = null
-    private var listener = object: OnServiceListener {
+    private var listener = object : OnServiceListener {
         override fun onUndindService() {
             unBindService()
         }
@@ -65,7 +57,7 @@ class MainActivity : BaseActivity() {
         stopService(serviceIntent)
     }
 
-    fun startService(){
+    fun startService() {
 
         val serviceIntent = Intent(this, AppService::class.java)
         //serviceIntent.putExtra("event", Constant.Companion.ServiceCommand.CHECK.command)
@@ -73,7 +65,7 @@ class MainActivity : BaseActivity() {
         //////////////////////////////////
         // Start Navi Service
 
-        if(serviceBinder == null) {
+        if (serviceBinder == null) {
             if (Build.VERSION.SDK_INT >= 26) {
                 startForegroundService(serviceIntent)
             } else {
@@ -85,7 +77,7 @@ class MainActivity : BaseActivity() {
             bindService(serviceIntent, mConnection, 0)
             //////////////////////////////////
 
-        }else {
+        } else {
             if (Build.VERSION.SDK_INT >= 26) {
                 startForegroundService(serviceIntent)
             } else {
@@ -95,14 +87,15 @@ class MainActivity : BaseActivity() {
     }
 
     fun unBindService() {
-        try{
-            if(serviceBinder != null) {
+        try {
+            if (serviceBinder != null) {
                 unbindService(mConnection)
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
 
         }
     }
+
     /**
      * ServiceConnection By NaviService
      */
@@ -120,6 +113,7 @@ class MainActivity : BaseActivity() {
 
             //unBindService()
         }
+
         // Called when the connection with the service disconnects unexpectedly
         override fun onServiceDisconnected(className: ComponentName) {
             //serviceStateCallback?.onServiceDisconnected()

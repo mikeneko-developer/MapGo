@@ -21,6 +21,7 @@ fun distanceCalc(
     //Log.v("TEST", "results[1]: " + results[1]); // 始点から終点までの方位角
     //Log.v("TEST", "results[2]: " + results[2]); // 終点から始点までの方位角
 
+    Log.v("distanceCalc", "メートル: " + results[0]); // 距離（キロメートル）
     if (isKm) {
         var kiro = (results[0]/1000)
         //Log.v("TEST", "kiro: " + kiro); // 距離（キロメートル）

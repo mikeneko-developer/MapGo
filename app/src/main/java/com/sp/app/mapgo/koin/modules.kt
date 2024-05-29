@@ -1,11 +1,12 @@
 package com.sp.app.mapgo.koin
 
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.dsl.module
-import org.koin.android.ext.koin.androidContext
+import com.sp.app.mapgo.ui.viewmodel.GameViewModel
 import com.sp.app.mapgo.ui.viewmodel.MainViewModel
-import com.sp.app.maplib.ui.map.MapViewModel
 import com.sp.app.maplib.repository.MapRepository
+import com.sp.app.maplib.ui.map.MapViewModel
+import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.dsl.module
 
 
 val factoryModule = module {
@@ -19,14 +20,13 @@ val apiModule = module {
 }
 
 val repositoryModule = module {
-    single {
-        MapRepository(this.androidContext())
+    single{
+        MapRepository(this.androidContext(), 1)
     }
 }
 
 val viewModelModule = module {
-    viewModel {
-        MainViewModel(get())
-        MapViewModel(this.androidContext(), get())
-    }
+    viewModelOf(::MainViewModel)
+    viewModelOf(::GameViewModel)
+    viewModelOf(::MapViewModel)
 }

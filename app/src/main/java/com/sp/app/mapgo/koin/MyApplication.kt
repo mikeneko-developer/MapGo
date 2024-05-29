@@ -4,20 +4,21 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
 
-class MyApplication: Application(), Application.ActivityLifecycleCallbacks {
+class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
     private var koinApplication: KoinApplication? = null
 
     override fun onCreate() {
         super.onCreate()
+        initialize()
         registerActivityLifecycleCallbacks(this)
 
-        initialize()
     }
 
     override fun onTerminate() {
@@ -28,10 +29,13 @@ class MyApplication: Application(), Application.ActivityLifecycleCallbacks {
     }
 
     private fun initialize() {
-        if(koinApplication == null) {
+        if (koinApplication == null) {
             koinApplication = startKoin {
                 androidContext(applicationContext)
                 androidLogger(Level.INFO)
+
+                androidFileProperties()
+
                 modules(repositoryModule, viewModelModule)
 
             }
