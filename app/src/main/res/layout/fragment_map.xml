@@ -89,6 +89,7 @@
             android:background="#BEFFFFFF"
             android:padding="5dp"
             android:text="@{viewmodel.debug_log}"
+            android:textColor="#B7000000"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

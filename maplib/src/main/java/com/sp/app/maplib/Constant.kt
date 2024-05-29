@@ -21,19 +21,6 @@ class Constant {
 
         const val ZOOM_ONE_SIZE = 0.9f
 
-        enum class DIALOG_ID(var id: Int) {
-            MAIN_MENU(1),
-            SELECT_POINT_MENU(2),
-            LIST_DIALOG(3)
-        }
-
-
-        enum class MAP_MODE(var id: Int) {
-            SELECT(0),
-            ROUTE(1),
-            GUIDE(2)
-        }
-
         enum class MAP_STATUS {
             MAP_LOAD,           // マップ情報の読み込み中
             MAP,                // マップ表示状態

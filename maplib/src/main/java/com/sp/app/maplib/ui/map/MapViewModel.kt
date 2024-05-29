@@ -80,15 +80,23 @@ class MapViewModel(
                 val latLng = LatLng(location.latitude, location.longitude)
                 setCurrentLocation(latLng)
 
-                debug_log.postValue(getDebugText())
             }
         }
+
+
+        mapRepository.mapStatusString.observeForever { text ->
+            debug_log.postValue(getDebugText())
+        }
+
+
+
     }
 
     fun pause() {
         mapRepository.isMapLocationEnable = false
         mapRepository.activityLifecycle.value = "pause"
         mapRepository.currentLocation.removeObserver {}
+        mapRepository.mapStatusString.removeObserver {}
     }
 
     fun destroy() {
