@@ -7,8 +7,12 @@ import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.widget.Button
 import com.sp.app.mapgo.ui.game.GameFragment
+import com.sp.app.mapgo.ui.goal.GoalFragment
+import com.sp.app.mapgo.ui.home.HomeFragment
 import com.sp.app.mapgo.ui.map.MapFragment
+import com.sp.app.mapgo.ui.selectPoint.SelectPointFragment
 import com.sp.app.mapgo.ui.viewmodel.MainViewModel
 import com.sp.app.maplib.service.AppService
 import com.sp.app.maplib.service.OnServiceListener
@@ -31,6 +35,18 @@ class MainActivity : BaseActivity() {
 
         addFragment(MapFragment(), R.id.content_background, "MapFragment")
         addFragment(GameFragment(), R.id.content_main, "GameFragment")
+
+        findViewById<Button>(R.id.button_menu).setOnClickListener {
+            replaceFragment(HomeFragment.newInstance(), R.id.content_main, "HomeFragment")
+        }
+
+        findViewById<Button>(R.id.button_select_point).setOnClickListener {
+            replaceFragment(SelectPointFragment.newInstance(), R.id.content_main, "SelectPointFragment")
+        }
+
+        findViewById<Button>(R.id.button_goal).setOnClickListener {
+            replaceFragment(GoalFragment.newInstance(), R.id.content_main, "GoalFragment")
+        }
 
         startService()
     }

@@ -7,6 +7,9 @@ import com.sp.app.maplib.ui.map.MapViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
+import com.sp.app.mapgo.ui.viewmodel.HomeViewModel
+import com.sp.app.mapgo.ui.viewmodel.SelectPointViewModel
+import com.sp.app.mapgo.ui.viewmodel.GoalViewModel
 
 
 val factoryModule = module {
@@ -29,4 +32,7 @@ val viewModelModule = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::GameViewModel)
     viewModelOf(::MapViewModel)
+    viewModelOf(::HomeViewModel)
+    viewModelOf(::SelectPointViewModel)
+    viewModelOf(::GoalViewModel)
 }

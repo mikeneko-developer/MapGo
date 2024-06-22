@@ -8,22 +8,48 @@
 
     <FrameLayout
         android:id="@+id/content_background"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </FrameLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:visibility="gone"></FrameLayout>
 
     <FrameLayout
         android:id="@+id/content_main"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </FrameLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:visibility="gone"></FrameLayout>
 
     <FrameLayout
         android:id="@+id/content_override"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </FrameLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:visibility="gone"></FrameLayout>
+
+    <Button
+        android:id="@+id/button_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="メニュー"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/button_select_point"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="目的地選択"
+        app:layout_constraintBottom_toTopOf="@+id/button_menu"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/button_goal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ゴール"
+        app:layout_constraintBottom_toTopOf="@+id/button_select_point"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
